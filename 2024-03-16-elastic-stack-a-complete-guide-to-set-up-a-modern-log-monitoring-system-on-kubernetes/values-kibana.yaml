@@ -1,16 +1,20 @@
-kibana:
-  resources:
-    requests:
-      cpu: 1
-      memory: 1024Mi
-    limits:
-      cpu: 2
-      memory: 1524Mi
-  elasticsearch:
-    hosts:
-      - elasticsearch.observability.svc.cluster.local
-    port: 9200
-    security:
-      auth:
-        enabled: true
-        elasticsearchPasswordSecret: elasticsearch-admin
+---
+image:
+  debug: true
+resources:
+  requests:
+    cpu: 1
+    memory: 512Mi
+  limits:
+    cpu: 2
+    memory: 1024Mi
+elasticsearch:
+  hosts:
+    - lab-elasticsearch.observability.svc.cluster.local
+  port: 9200
+  security:
+    auth:
+      enabled: true
+      existingSecret: kibana-admin
+      createSystemUser: true
+      elasticsearchPasswordSecret: elasticsearch-admin

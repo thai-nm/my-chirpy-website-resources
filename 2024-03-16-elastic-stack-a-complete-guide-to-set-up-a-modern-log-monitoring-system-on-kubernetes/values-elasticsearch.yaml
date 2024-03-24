@@ -8,26 +8,35 @@ security:
 master:                                 # [5]
   replicaCount: 1
   persistence:
-    size: 5Gi
+    size: 2Gi
   resources:
     requests:
-      cpu: 1
-      memory: 256Mi
+      cpu: 500m
+      memory: 512Mi
     limits:
-      cpu: 2
-      memory: 1024Mi
+      cpu: 750m
+      memory: 768Mi
 data:                                   # [6]
   replicaCount: 2
   persistence:
     size: 5Gi
   resources:
     requests:
-      cpu: 1
-      memory: 256Mi
+      cpu: 500m
+      memory: 512Mi
     limits:
-      cpu: 2
-      memory: 1024Mi
+      cpu: 750m
+      memory: 1524Mi
+coordinating:
+  replicaCount: 1
+  persistence:
+    size: 2Gi
+  resources:
+    requests:
+      cpu: 500m
+      memory: 512Mi
+    limits:
+      cpu: 750m
+      memory: 768Mi
 ingest:
   enabled: false                        # [7]
-coordinating:
-  enabled: false                        # [8]
