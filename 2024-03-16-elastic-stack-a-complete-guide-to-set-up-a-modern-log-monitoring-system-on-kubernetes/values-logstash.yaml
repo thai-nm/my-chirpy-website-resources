@@ -1,0 +1,31 @@
+---
+replicaCount: 1
+resources:
+  requests:
+    cpu: 2
+    memory: 512Mi
+  limits:
+    cpu: 3
+    memory: 1024Mi
+containerPorts:
+  - name: http
+    containerPort: 8080
+    protocol: TCP
+
+input: |-
+  http { port => 8080 }
+
+filter: |-
+  filter: |-
+    grok {
+      match => { "message" => "%{COMBINEDAPACHELOG}" }
+    }
+    date {
+      match => [ "timestamp" , "dd/MMM/yyyy:HH:mm:ss Z" ]
+    }
+
+output: |-
+  elasticsearch {
+    hosts => ["http://elasticsearch.observability.svc.cluster.local:9200"]
+    index => "%{[@metadata][beat]}-%{+YYYY.MM.dd}"
+  }
