@@ -11,21 +11,31 @@ containerPorts:
   - name: http
     containerPort: 8080
     protocol: TCP
+extraEnvVars:
+  - name: ES_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: elasticsearch-admin
+        key: elasticsearch-password
 
 input: |-
   http { port => 8080 }
 
 filter: |-
-  filter: |-
-    grok {
-      match => { "message" => "%{COMBINEDAPACHELOG}" }
-    }
+  if [@metadata][input-http] {
     date {
-      match => [ "timestamp" , "dd/MMM/yyyy:HH:mm:ss Z" ]
+      match => [ "date", "UNIX" ]
+      remove_field => [ "date" ]
     }
+    mutate {
+      remove_field => ["headers","host"]
+    }
+  }
 
 output: |-
   elasticsearch {
-    hosts => ["http://elasticsearch.observability.svc.cluster.local:9200"]
-    index => "%{[@metadata][beat]}-%{+YYYY.MM.dd}"
+    hosts => ["http://lab-elasticsearch.observability.svc.cluster.local:9200"]
+    # index => "%{[@metadata][beat]}-%{+YYYY.MM.dd}"
+    user => "elastic"
+    password => "${ES_PASSWORD}"
   }
